@@ -184,13 +184,13 @@ class PhoneInput extends React.Component {
 
     let countryGuess;
     if (props.disableInitialCountryGuess) {
-      countryGuess = props.country ? onlyCountries.find(o => o.iso2 == props.country) || 0 : 0;
+      countryGuess = props.country ? this.getSelectedCountry(props, onlyCountries) : 0;
     } else if (inputNumber.length > 1) {
       // Country detect by phone
       countryGuess = this.guessSelectedCountry(inputNumber.substring(0, 6), props.country, onlyCountries, hiddenAreaCodes) || 0;
     } else if (props.country) {
       // Default country
-      countryGuess = onlyCountries.find(o => o.iso2 == props.country) || 0;
+      countryGuess = this.getSelectedCountry(props, onlyCountries);
     } else {
       // Empty params
       countryGuess = 0;
@@ -249,6 +249,10 @@ class PhoneInput extends React.Component {
     }
   }
 
+  getSelectedCountry = memoize((props, onlyCountries) => {
+    return onlyCountries.find(o => o.iso2 == props.country) || 0;
+  });
+  
   getProbableCandidate = memoize((queryString) => {
     if (!queryString || queryString.length === 0) {
       return null;
